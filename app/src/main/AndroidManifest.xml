@@ -20,10 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".AddApplicantActivity"
+        <activity
+            android:name=".AddApplicantActivity"
             android:label="@string/add_applicant">
-
         </activity>
 
         <provider
@@ -31,6 +30,8 @@
             android:authorities="com.example.android.whizbang"
             android:exported="false"/>
 
+        <activity android:name=".ConfirmActivity">
+        </activity>
     </application>
 
 </manifest>

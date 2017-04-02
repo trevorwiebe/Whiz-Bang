@@ -3,10 +3,6 @@ package com.example.android.whizbang;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -23,7 +19,7 @@ import com.example.android.whizbang.database.WhizBangContract;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     SearchView mSearchView;
     ListView mListView;
@@ -32,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public static final String EMAIL_SUBJECT = "Main Street Cafe Billing";
     ArrayList<String> itemsArrayList = new ArrayList<>();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,53 +36,41 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getNewData();
+
         mSearchView = (SearchView) findViewById(R.id.search_view);
+
         mListView = (ListView) findViewById(R.id.listview);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, itemsArrayList);
-
-        mListView.setAdapter(adapter);
+        mListView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemsArrayList));
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String[] selectedFromList = new String[]{mListView.getItemAtPosition(position).toString()};
-                String[] projection = new String[]{WhizBangContract.WhizBangEntry.EMAIL_COLUMN};
+                String selected = mListView.getItemAtPosition(position).toString();
 
-                Cursor cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI,
-                        projection,
-                        null,
-                        selectedFromList,
-                        null);
-
-
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("message/rfc822");
-                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"thisistrevor4@gmail.com"});
-                intent.putExtra(Intent.EXTRA_SUBJECT, EMAIL_SUBJECT);
-                intent.putExtra(Intent.EXTRA_TEXT, "This is the body of the email");
-
-                try {
-                    startActivity(Intent.createChooser(intent, "Send mail..."));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Snackbar.make(view, "There are no email clients installed.", Snackbar.LENGTH_LONG).show();
-                }
-                cr.close();
+                Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
+                intent.putExtra("name", selected);
+                startActivity(intent);
             }
-        });
 
+        });
+//        mListView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                v.showContextMenu();
+//                return true;
+//            }
+//        });
         mListView.setTextFilterEnabled(true);
         setupSearchView();
-        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
+        itemsArrayList.clear();
+        getNewData();
     }
 
     @Override
@@ -101,58 +86,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<Cursor>(this) {
-
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                forceLoad();
-            }
-
-            @Override
-            public Cursor loadInBackground() {
-                try{
-
-                    Cursor cr;
-                    String[] projection = new String[]{WhizBangContract.WhizBangEntry.NAME_COLUMN};
-                    cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI,
-                            projection,
-                            null,
-                            null,
-                            null);
-                    return cr;
-
-                }catch (Exception e){
-                    Log.e(TAG, "loadInBackground: Failed to load data from database" );
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        if(data == null){
-            Log.e(TAG, "onLoadFinished: Error getting data" );
-        }else {
-            data.moveToFirst();
-            while(!data.isAfterLast()){
-                String info = data.getString(0);
-                itemsArrayList.add(info);
-                data.moveToNext();
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 
     @Override
@@ -185,5 +118,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSubmitButtonEnabled(false);
+    }
+
+    private void getNewData() {
+        Cursor cr;
+        String[] projection = new String[]{WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN, WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN};
+        cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+
+        if (cr == null) {
+            Log.e(TAG, "onLoadFinished: Error getting data");
+        } else {
+            cr.moveToFirst();
+            while (!cr.isAfterLast()) {
+                String first_name = cr.getString(cr.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
+                String last_name = cr.getString(cr.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
+                String total_name = first_name + " " + last_name;
+                itemsArrayList.add(total_name);
+                cr.moveToNext();
+            }
+        }
+        cr.close();
     }
 }

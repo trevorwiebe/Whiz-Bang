@@ -62,6 +62,21 @@ public class WhizBangContentProvider extends ContentProvider {
                         sortOrder);
                 break;
 
+            case INFORMATION_WITH_ID:
+
+                String id = uri.getPathSegments().get(1);
+
+                String mSelection = "_id=?";
+                String[] mSelectionArgs = new String[]{id};
+
+                informationCursor = db.query(WhizBangContract.WhizBangEntry.TABLE_NAME,
+                        projection,
+                        mSelection,
+                        mSelectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri: " + uri);
         }
@@ -115,6 +130,9 @@ public class WhizBangContentProvider extends ContentProvider {
         int informationDeleted;
 
         switch (match){
+            case INFORMATION:
+                informationDeleted = db.delete(WhizBangContract.WhizBangEntry.TABLE_NAME, null, null);
+                break;
             case INFORMATION_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 informationDeleted = db.delete(WhizBangContract.WhizBangEntry.TABLE_NAME, "_id=?", new String[]{id});
