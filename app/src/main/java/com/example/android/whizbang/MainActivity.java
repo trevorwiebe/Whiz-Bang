@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ListView mListView;
     public static final int LOADER_ID = 26;
     private static final String TAG = "MainActivity";
-    public static final String EMAIL_SUBJECT = "Main Street Cafe Billing";
     ArrayList<String> itemsArrayList = new ArrayList<>();
 
 

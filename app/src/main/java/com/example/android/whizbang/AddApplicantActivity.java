@@ -33,6 +33,7 @@ public class AddApplicantActivity extends AppCompatActivity {
         mFloatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            // TODO: 4/2/2017 add check mark icon to fab
             @Override
             public void onClick(View v) {
                 String first_name = mFirstName.getText().toString();
