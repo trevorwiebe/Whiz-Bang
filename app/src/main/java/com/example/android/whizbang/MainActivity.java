@@ -1,8 +1,10 @@
 package com.example.android.whizbang;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -13,8 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.android.whizbang.database.WhizBangContract;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int LOADER_ID = 37;
     private ListAdapter mAdapter;
     RecyclerView mRecyclerView;
+    private ArrayList<String> clientList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,22 +36,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final Vibrator mVibrator = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new ListAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnItemTouchListener(new ItemClickListener(this, mRecyclerView, new ItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                String selected = clientList.get(position);
+                Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
+                intent.putExtra("name", selected);
+                startActivity(intent);
+            }
 
-
-//                String selected = mListView.getItemAtPosition(position).toString();
-//                Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-//                intent.putExtra("name", selected);
-//                startActivity(intent);
-
-//                String selected = mListView.getItemAtPosition(position).toString();
-//                Intent editIntent = new Intent(MainActivity.this, EditDeleteActivity.class);
-//                editIntent.putExtra("name", selected);
-//                startActivity(editIntent);
-//                return true;
+            @Override
+            public void onLongItemClick(View view, int position) {
+                String selected = clientList.get(position);
+                Intent editIntent = new Intent(MainActivity.this, EditDeleteActivity.class);
+                editIntent.putExtra("name", selected);
+                startActivity(editIntent);
+                mVibrator.vibrate(25);
+            }
+        }));
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
@@ -98,6 +113,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        clientList.clear();
+        if (data.moveToFirst()) {
+            while (!data.isAfterLast()) {
+                String first_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
+                clientList.add(first_name);
+                data.moveToNext();
+            }
+        }
         mAdapter.swapCursor(data);
     }
 

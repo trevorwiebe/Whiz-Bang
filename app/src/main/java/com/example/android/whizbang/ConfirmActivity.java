@@ -27,6 +27,9 @@ public class ConfirmActivity extends AppCompatActivity {
     FloatingActionButton mFloatingActionButton;
     TextView mTextView;
     EditText mAmountOwed;
+    String email_address;
+    String phone_number;
+    String connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,22 +48,22 @@ public class ConfirmActivity extends AppCompatActivity {
         // TODO: 4/6/2017 get correct date
         final String date = "hello";
 
-        String[] selectedFromList = new String[]{name};
-        String[] projection = new String[]{WhizBangContract.WhizBangEntry.EMAIL_COLUMN};
-
         // TODO: 4/2/2017 fix database problems with no quering for email address at a specific name
-        Cursor cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, "email=?", selectedFromList, null);
+        final String[] mSelection = new String[]{name};
 
-        Log.d(TAG, "onCreate: here");
+        Cursor editCursor = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, "first_name=?", mSelection, null);
 
-        if (cr.moveToFirst()) {
-            while (!cr.isAfterLast()) {
-                String email_address = cr.getString(cr.getColumnIndex(WhizBangContract.WhizBangEntry.EMAIL_COLUMN));
-                Log.d(TAG, "onCreate: " + email_address);
-                cr.moveToNext();
+
+        if (editCursor.moveToFirst()) {
+            while (!editCursor.isAfterLast()) {
+                email_address = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.EMAIL_COLUMN));
+                phone_number = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.PHONE_NUMBER));
+                editCursor.moveToNext();
             }
         }
 
+
+        Log.d(TAG, "onCreate: finished " + connection);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +83,7 @@ public class ConfirmActivity extends AppCompatActivity {
 
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setType("*/*");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"thisistrevor4@gmail.com"});
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email_address, phone_number});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, email_subject);
                 emailIntent.putExtra(Intent.EXTRA_TEXT, body_of_email);
 
@@ -92,6 +95,6 @@ public class ConfirmActivity extends AppCompatActivity {
             }
         });
 
-        cr.close();
+        editCursor.close();
     }
 }

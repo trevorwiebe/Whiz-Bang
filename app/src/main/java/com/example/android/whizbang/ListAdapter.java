@@ -58,6 +58,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         return mCursor.getCount();
     }
 
+
     public Cursor swapCursor(Cursor cursor) {
         if (mCursor == cursor) {
             return null;

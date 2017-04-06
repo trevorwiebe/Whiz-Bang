@@ -35,13 +35,8 @@ public class EditDeleteActivity extends AppCompatActivity {
         mSubmit = (FloatingActionButton) findViewById(R.id.submit_fab);
 
         Intent editIntent = getIntent();
-        String name = editIntent.getStringExtra("name");
 
-        String arr[] = name.split(" ");
-
-        final String[] mSelection = new String[]{arr[0]};
-
-        Log.d(TAG, "onCreate: " + mSelection);
+        final String[] mSelection = new String[]{editIntent.getStringExtra("name")};
 
         Cursor editCursor = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, "first_name=?", mSelection, null);
 

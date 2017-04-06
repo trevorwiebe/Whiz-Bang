@@ -12,6 +12,7 @@
     <string name="email_address_label">Email</string>
     <string name="phone_number_label">Phone Number</string>
     <string name="blanks_not_filled">Please fill First Name, Email and/or Phone Number.</string>
+    <string name="hint_example">Example: 16028770957@vtext.com</string>
 
     <!-- confirm activity -->
     <string name="no_clients_installed">No available email client, Please install one</string>
@@ -25,4 +26,7 @@
 
     <!-- menu strings -->
     <string name="add_new_client">Add New Client</string>
+
+    <!-- search hint string -->
+    <string name="search_hint">Search...</string>
 </resources>
