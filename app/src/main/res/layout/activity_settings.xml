@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.whizbang.SettingsActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Label"
+            android:padding="@dimen/default_padding"
+            android:text="Edit Email Subject"/>
+
+        <EditText
+            android:id="@+id/email_subject_edittext"
+            android:layout_margin="@dimen/default_padding"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Label"
+            android:padding="@dimen/default_padding"
+            android:text="Edit Email Body"/>
+
+        <EditText
+            android:id="@+id/email_body_edittext"
+            android:layout_margin="@dimen/default_padding"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/submit_edit_fab"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_save_checkmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"/>
+
+</android.support.design.widget.CoordinatorLayout>

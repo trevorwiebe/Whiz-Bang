@@ -5,10 +5,9 @@
     <item
         android:id="@+id/add_applicant"
         android:orderInCategory="100"
-        android:title="New"
+        android:title="@string/add_new_client"
+        android:icon="@drawable/ic_add_new_client"
         app:showAsAction="ifRoom"/>
-
-    <!--todo: get plus icon and add it to menu item-->
 
     <item
         android:id="@+id/action_settings"

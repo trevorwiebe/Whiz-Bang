@@ -20,6 +20,9 @@ public class WhizBangContentProvider extends ContentProvider {
     public static final int INFORMATION = 100;
     public static final int INFORMATION_WITH_ID = 101;
 
+    public static final int EMAIL = 200;
+    public static final int EMAIL_WITH_ID = 201;
+
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     public static UriMatcher buildUriMatcher(){
@@ -28,6 +31,8 @@ public class WhizBangContentProvider extends ContentProvider {
 
         uriMatcher.addURI(WhizBangContract.AUTHORITY, WhizBangContract.PATH_INFORMATION, INFORMATION);
         uriMatcher.addURI(WhizBangContract.AUTHORITY, WhizBangContract.PATH_INFORMATION + "/#", INFORMATION_WITH_ID);
+        uriMatcher.addURI(WhizBangContract.AUTHORITY, WhizBangContract.PATH_EMAIL, EMAIL);
+        uriMatcher.addURI(WhizBangContract.AUTHORITY, WhizBangContract.PATH_EMAIL + "/*", EMAIL_WITH_ID);
 
         return uriMatcher;
     }
@@ -66,13 +71,36 @@ public class WhizBangContentProvider extends ContentProvider {
 
                 String id = uri.getPathSegments().get(1);
 
-                String mSelection = "_id=?";
+                String mSelection = "_string=?";
                 String[] mSelectionArgs = new String[]{id};
 
                 informationCursor = db.query(WhizBangContract.WhizBangEntry.TABLE_NAME,
                         projection,
                         mSelection,
                         mSelectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case EMAIL:
+                informationCursor = db.query(WhizBangContract.WhizBangEmail.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case EMAIL_WITH_ID:
+                String id2 = uri.getPathSegments().get(1);
+
+                String mSelection2 = "_id=?";
+                String[] mSelectionArgs2 = new String[]{id2};
+
+                informationCursor = db.query(WhizBangContract.WhizBangEmail.TABLE_NAME,
+                        projection,
+                        mSelection2,
+                        mSelectionArgs2,
                         null,
                         null,
                         sortOrder);
@@ -101,8 +129,17 @@ public class WhizBangContentProvider extends ContentProvider {
             case INFORMATION:
                 long id = db.insert(WhizBangContract.WhizBangEntry.TABLE_NAME, null, values);
                 if(id > 0){
-                    locationUri = ContentUris.withAppendedId(WhizBangContract.WhizBangEntry.CONTENT_URI, id);
+                    locationUri = ContentUris.withAppendedId(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, id);
                 }else{
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+
+            case EMAIL:
+                long id2 = db.insert(WhizBangContract.WhizBangEmail.TABLE_NAME, null, values);
+                if (id2 > 0) {
+                    locationUri = ContentUris.withAppendedId(WhizBangContract.WhizBangEmail.CONTENT_URI_EMAIL, id2);
+                } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
@@ -117,7 +154,42 @@ public class WhizBangContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mWhizBangDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        int informationUpdated;
+
+        switch (match) {
+            case INFORMATION:
+                informationUpdated = db.update(WhizBangContract.WhizBangEntry.TABLE_NAME, values, null, null);
+                break;
+            case INFORMATION_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+
+                String mSelection = "_id=?";
+                String[] mSelectionArgs = new String[]{id};
+
+                informationUpdated = db.update(WhizBangContract.WhizBangEntry.TABLE_NAME, values, mSelection, mSelectionArgs);
+                break;
+            case EMAIL:
+                informationUpdated = db.update(WhizBangContract.WhizBangEmail.TABLE_NAME, values, null, null);
+                break;
+            case EMAIL_WITH_ID:
+                String id2 = uri.getPathSegments().get(1);
+
+                String mSelection2 = "_id=?";
+                String[] mSelectionArgs2 = new String[]{id2};
+
+                informationUpdated = db.update(WhizBangContract.WhizBangEmail.TABLE_NAME, values, mSelection2, mSelectionArgs2);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri: " + uri);
+        }
+        if (informationUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return informationUpdated;
     }
 
     @Override

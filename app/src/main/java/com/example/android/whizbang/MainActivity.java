@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -23,9 +22,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     SearchView mSearchView;
     ListView mListView;
-    public static final int LOADER_ID = 26;
     private static final String TAG = "MainActivity";
     ArrayList<String> itemsArrayList = new ArrayList<>();
+    private ListAdapter mListAdapter;
 
 
     @Override
@@ -41,7 +40,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         mListView = (ListView) findViewById(R.id.listview);
 
-        mListView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemsArrayList));
+        mListAdapter = new ListAdapter(this, itemsArrayList);
+        mListView.setAdapter(mListAdapter);
+
+        setUp();
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -51,18 +54,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
                 intent.putExtra("name", selected);
                 startActivity(intent);
-            }
 
+            }
         });
-//        mListView.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                v.showContextMenu();
-//                return true;
-//            }
-//        });
-        mListView.setTextFilterEnabled(true);
-        setupSearchView();
+
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String selected = mListView.getItemAtPosition(position).toString();
+                Intent editIntent = new Intent(MainActivity.this, EditDeleteActivity.class);
+                editIntent.putExtra("name", selected);
+                startActivity(editIntent);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -103,17 +108,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+//            Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
+//            startActivity(settings_intent);
+            return false;
         }
 
         if(id == R.id.add_applicant){
-            Intent intent = new Intent(MainActivity.this, AddApplicantActivity.class);
+            Intent intent = new Intent(MainActivity.this, AddNewClient.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupSearchView(){
+    private void setUp() {
+        mListView.setTextFilterEnabled(true);
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSubmitButtonEnabled(false);
@@ -122,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private void getNewData() {
         Cursor cr;
         String[] projection = new String[]{WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN, WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN};
-        cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI,
+        cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY,
                 projection,
                 null,
                 null,
@@ -139,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 itemsArrayList.add(total_name);
                 cr.moveToNext();
             }
+        }
+        if (mListAdapter != null) {
+            mListAdapter.notifyDataSetChanged();
         }
         cr.close();
     }

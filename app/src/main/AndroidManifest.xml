@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/whizbang_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -23,13 +23,27 @@
         </activity>
 
         <activity
-            android:name=".AddApplicantActivity"
-            android:label="@string/add_applicant">
+            android:name=".AddNewClient"
+            android:label="@string/add_client"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <activity
             android:name=".ConfirmActivity"
-            android:label="@string/confirm_amount">
+            android:label="@string/confirm_amount"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+        <activity
+            android:name=".EditDeleteActivity"
+            android:label="@string/edit_delete"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <provider

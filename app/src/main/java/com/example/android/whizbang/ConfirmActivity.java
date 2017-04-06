@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
@@ -18,7 +19,6 @@ import static com.example.android.whizbang.R.id.amount_owed;
 
 public class ConfirmActivity extends AppCompatActivity {
 
-    public static final String EMAIL_SUBJECT = "Main Street Cafe Billing";
     private static final String TAG = "ConfirmActivity";
 
     ArrayList<String> emailAddress = new ArrayList<>();
@@ -47,7 +47,7 @@ public class ConfirmActivity extends AppCompatActivity {
         String[] projection = new String[]{WhizBangContract.WhizBangEntry.EMAIL_COLUMN};
 
         // TODO: 4/2/2017 fix database problems with no quering for email address at a specific name
-        Cursor cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI, null, null, null, null);
+        Cursor cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, null, null, null);
 
         if (cr.moveToFirst()) {
             while (!cr.isAfterLast()) {
@@ -57,29 +57,33 @@ public class ConfirmActivity extends AppCompatActivity {
         }
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-
-            // TODO: 4/2/2017 fix once you choose email to always finish with that action
-
             @Override
             public void onClick(View v) {
 
+                // TODO: 4/3/2017 query database to get email body and email subject to use instead of hard string
+
+                if (mAmountOwed.length() == 0) {
+                    Snackbar.make(v, getResources().getString(R.string.no_amount_owed), Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 String amount_owed = mAmountOwed.getText().toString();
 
-                final String Body_of_email = "Hello there, This is your monthly notice. As of " + date + " you owe Main Street Cafe $" + amount_owed +
+                final String email_subject = "Main Street Cafe Billing";
+                final String body_of_email = "Hello there, This is your monthly notice. As of " + date + " you owe Main Street Cafe $" + amount_owed +
                         ". You can drop payment by on your next visit. Thank you for your patronage! Notice: This email inbox is not monitored.";
 
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                emailIntent.setType("message/rfc822");
+                emailIntent.setType("*/*");
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"thisistrevor4@gmail.com"});
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, EMAIL_SUBJECT);
-                emailIntent.putExtra(Intent.EXTRA_TEXT, Body_of_email);
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, email_subject);
+                emailIntent.putExtra(Intent.EXTRA_TEXT, body_of_email);
 
-                try {
-                    startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(getBaseContext(), "There are no email clients installed.", Toast.LENGTH_LONG).show();
+                if (emailIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(emailIntent);
+                } else {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.no_clients_installed), Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 

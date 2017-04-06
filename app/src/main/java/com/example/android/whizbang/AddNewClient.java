@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.android.whizbang.database.WhizBangContract;
 
-public class AddApplicantActivity extends AppCompatActivity {
+public class AddNewClient extends AppCompatActivity {
 
     EditText mFirstName;
     EditText mLastName;
@@ -23,7 +23,7 @@ public class AddApplicantActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_charge);
+        setContentView(R.layout.activity_add_new_client);
 
         mFirstName = (EditText) findViewById(R.id.first_name);
         mLastName = (EditText) findViewById(R.id.last_name);
@@ -33,7 +33,6 @@ public class AddApplicantActivity extends AppCompatActivity {
         mFloatingActionButton = (FloatingActionButton)findViewById(R.id.fab);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            // TODO: 4/2/2017 add check mark icon to fab
             @Override
             public void onClick(View v) {
                 String first_name = mFirstName.getText().toString();
@@ -42,7 +41,7 @@ public class AddApplicantActivity extends AppCompatActivity {
                 String emailAddress = mEmailAddress.getText().toString();
 
                 if (mFirstName.length() == 0 || (mEmailAddress.length() == 0 && mPhoneNumber.length() == 0)) {
-                    Snackbar.make(v, "Please fill First Name, Email and/or Phone Number", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(v, getResources().getString(R.string.blanks_not_filled), Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
@@ -53,7 +52,7 @@ public class AddApplicantActivity extends AppCompatActivity {
                 contentValues.put(WhizBangContract.WhizBangEntry.PHONE_NUMBER, phone_number);
                 contentValues.put(WhizBangContract.WhizBangEntry.EMAIL_COLUMN, emailAddress);
 
-                Uri uri = getContentResolver().insert(WhizBangContract.WhizBangEntry.CONTENT_URI, contentValues);
+                Uri uri = getContentResolver().insert(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, contentValues);
                 if(uri != null){
                     Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_SHORT).show();
                 }
