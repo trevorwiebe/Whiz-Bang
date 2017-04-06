@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Whiz Bang</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="add_client">Ajouter un nouveau client</string>
+    <string name="edit_delete">Modifier ~ Supprimer</string>
+    <string name="confirm_amount">Confirmer le montant</string>
+
+    <!-- add client activity -->
+    <string name="first_name_label">Prénom</string>
+    <string name="last_name_label">Nom de famille</string>
+    <string name="email_address_label">Email</string>
+    <string name="phone_number_label">Numéro de téléphone</string>
+    <string name="blanks_not_filled">Remplissez le prénom, l`adresse électronique et ou le numéro de téléphone.</string>
+    <string name="hint_example">Exemple: 16028770957@vtext.com</string>
+
+    <!-- confirm activity -->
+    <string name="no_clients_installed">Aucun client de messagerie disponible, veuillez installer un</string>
+    <string name="no_amount_owed">Veuillez saisir le montant dû</string>
+
+    <!-- editit activity -->
+    <string name="edit_first_name">Modifier le prénom</string>
+    <string name="edit_last_name">Modifier le nom de famille</string>
+    <string name="edit_email_address">Modifier l`adresse e-mail</string>
+    <string name="edit_phone_number">Modifier le numéro de téléphone</string>
+
+    <!-- menu strings -->
+    <string name="add_new_client">Ajouter un nouveau client</string>
+
+    <!-- search hint string -->
+    <string name="search_hint">Chercher...</string>
+
+</resources>

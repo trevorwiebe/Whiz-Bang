@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.example.android.whizbang.database.WhizBangContract;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.android.whizbang.R.id.amount_owed;
 
@@ -46,9 +48,9 @@ public class ConfirmActivity extends AppCompatActivity {
         mTextView.setText("How much does " + name + " owe?");
 
         // TODO: 4/6/2017 get correct date
-        final String date = "hello";
+        final String currentDateTimeString = DateFormat.getDateInstance().format(new Date());
 
-        // TODO: 4/2/2017 fix database problems with no quering for email address at a specific name
+
         final String[] mSelection = new String[]{name};
 
         Cursor editCursor = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, "first_name=?", mSelection, null);
@@ -57,7 +59,6 @@ public class ConfirmActivity extends AppCompatActivity {
         if (editCursor.moveToFirst()) {
             while (!editCursor.isAfterLast()) {
                 email_address = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.EMAIL_COLUMN));
-                phone_number = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.PHONE_NUMBER));
                 editCursor.moveToNext();
             }
         }
@@ -78,12 +79,12 @@ public class ConfirmActivity extends AppCompatActivity {
                 // TODO: 4/3/2017 query database to get email body and email subject to use instead of hard string
 
                 final String email_subject = "Main Street Cafe Billing";
-                final String body_of_email = "Hello there, This is your monthly notice. As of " + date + " you owe Main Street Cafe $" + amount_owed +
+                final String body_of_email = "Hello there, This is your monthly notice. As of " + currentDateTimeString + " you owe Main Street Cafe $" + amount_owed +
                         ". You can drop payment by on your next visit. Thank you for your patronage! Notice: This email inbox is not monitored.";
 
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setType("*/*");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email_address, phone_number});
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email_address});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, email_subject);
                 emailIntent.putExtra(Intent.EXTRA_TEXT, body_of_email);
 

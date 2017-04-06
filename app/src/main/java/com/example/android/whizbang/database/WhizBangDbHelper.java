@@ -12,7 +12,7 @@ public class WhizBangDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "whizBang.db";
 
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
 
 
     public WhizBangDbHelper(Context context){
@@ -28,8 +28,7 @@ public class WhizBangDbHelper extends SQLiteOpenHelper {
                 + WhizBangContract.WhizBangEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
                 + WhizBangContract.WhizBangEntry.EMAIL_COLUMN + " TEXT NOT NULL, "
                 + WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN + " TEXT NOT NULL, "
-                + WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN + " TEXT NOT NULL, "
-                + WhizBangContract.WhizBangEntry.PHONE_NUMBER + " TEXT NOT NULL);";
+                + WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN + " TEXT NOT NULL);";
 
         final String CREATE_WHIZBANG_EMAIL_TABLE = "CREATE TABLE "
                 + WhizBangContract.WhizBangEmail.TABLE_NAME + " ("

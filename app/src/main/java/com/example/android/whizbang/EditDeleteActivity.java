@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -20,7 +19,6 @@ public class EditDeleteActivity extends AppCompatActivity {
     EditText mEditFirstName;
     EditText mEditLastName;
     EditText mEditEmailAddress;
-    EditText mEditPhoneNumber;
     FloatingActionButton mSubmit;
 
     @Override
@@ -31,7 +29,6 @@ public class EditDeleteActivity extends AppCompatActivity {
         mEditFirstName = (EditText) findViewById(R.id.edit_first_name_ed);
         mEditLastName = (EditText) findViewById(R.id.edit_last_name_ed);
         mEditEmailAddress = (EditText) findViewById(R.id.edit_email_address_ed);
-        mEditPhoneNumber = (EditText) findViewById(R.id.edit_phone_number_ed);
         mSubmit = (FloatingActionButton) findViewById(R.id.submit_fab);
 
         Intent editIntent = getIntent();
@@ -46,12 +43,10 @@ public class EditDeleteActivity extends AppCompatActivity {
                 String first_name = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
                 String last_name = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
                 String email_address = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.EMAIL_COLUMN));
-                String phone_number = editCursor.getString(editCursor.getColumnIndex(WhizBangContract.WhizBangEntry.PHONE_NUMBER));
 
                 mEditFirstName.setText(first_name);
                 mEditLastName.setText(last_name);
                 mEditEmailAddress.setText(email_address);
-                mEditPhoneNumber.setText(phone_number);
                 editCursor.moveToNext();
             }
         }
@@ -62,11 +57,10 @@ public class EditDeleteActivity extends AppCompatActivity {
                 String edited_first_name = mEditFirstName.getText().toString();
                 String edited_last_name = mEditLastName.getText().toString();
                 String edited_email_address = mEditEmailAddress.getText().toString();
-                String edited_phone_number = mEditPhoneNumber.getText().toString();
 
-                if (mEditFirstName.length() == 0 && mEditLastName.length() == 0 && mEditEmailAddress.length() == 0 && mEditPhoneNumber.length() == 0) {
+                if (mEditFirstName.length() == 0 && mEditLastName.length() == 0 && mEditEmailAddress.length() == 0) {
 
-                    Log.d(TAG, "onClick: " + WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY.toString());
+
                     int numsDeleted = getContentResolver().delete(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, "first_name=?", mSelection);
 
                     if (numsDeleted != 0) {
@@ -81,7 +75,6 @@ public class EditDeleteActivity extends AppCompatActivity {
                 contentValues.put(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN, edited_first_name);
                 contentValues.put(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN, edited_last_name);
                 contentValues.put(WhizBangContract.WhizBangEntry.EMAIL_COLUMN, edited_email_address);
-                contentValues.put(WhizBangContract.WhizBangEntry.PHONE_NUMBER, edited_phone_number);
 
                 getContentResolver().update(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, contentValues, null, null);
 
