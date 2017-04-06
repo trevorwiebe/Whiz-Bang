@@ -1,119 +1,86 @@
 package com.example.android.whizbang;
 
-import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.List;
+import com.example.android.whizbang.database.WhizBangContract;
 
 /**
  * Created by thisi on 4/5/2017.
  */
-//
-//public class ListAdapter extends BaseAdapter {
-//
-//    private ArrayList<String> mList;
-//    private Context mContext;
-//    private LayoutInflater mLayoutInflater = null;
-//
-//    public ListAdapter(Context context, ArrayList<String> list){
-//
-//        mContext = context;
-//        mList = list;
-//        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//
-//    }
-//
-//    @Override
-//    public int getCount() {
-//        return mList.size();
-//    }
-//
-//    @Override
-//    public long getItemId(int position) {
-//        return position;
-//    }
-//
-//    @Override
-//    public Object getItem(int position) {
-//        return mList.get(position);
-//    }
-//
-//    @Override
-//    public View getView(int position, View convertView, ViewGroup parent) {
-//        View v = convertView;
-//        ListAdapter viewHolder;
-//        if(convertView == null){
-//            LayoutInflater layoutInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            v = layoutInflater.inflate(R.layout.list_layout, null);
-//            v.setTag(viewHolder);
-//        }else{
-//            viewHolder = (ListAdapter)v.getTag();
-//        }
-//        viewHolder.mT
-//    }
-//
-//    private class ListAdapterViewHolder{
-//        public TextView mTextView;
-//        public ListAdapterViewHolder(View base){
-//            mTextView = (TextView) base.findViewById(R.id.listview_item);
-//        }
-//    }
-//}
 
-public class ListAdapter extends BaseAdapter {
-    private Activity mContext;
-    private List<String> mList;
-    private LayoutInflater mLayoutInflater = null;
+public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder> {
 
-    public ListAdapter(Activity context, List<String> list) {
-        mContext = context;
-        mList = list;
-        mLayoutInflater = (LayoutInflater) mContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private static final String TAG = "ListAdapter";
+    private Cursor mCursor;
+    private Context mContext;
+
+    public ListAdapter(Context context) {
+        this.mContext = context;
     }
 
     @Override
-    public int getCount() {
-        return mList.size();
+    public ListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_layout, parent, false);
+        return new ListViewHolder(view);
     }
 
     @Override
-    public Object getItem(int pos) {
-        return mList.get(pos);
+    public void onBindViewHolder(ListViewHolder holder, int position) {
+
+        int idIndex = mCursor.getColumnIndex(WhizBangContract.WhizBangEntry._ID);
+        int clientFistName = mCursor.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN);
+        int clientLastName = mCursor.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN);
+
+        mCursor.moveToPosition(position);
+
+        final int id = mCursor.getInt(idIndex);
+
+        String firstName = mCursor.getString(clientFistName);
+        String lastName = mCursor.getString(clientLastName);
+        String finishedName = firstName + " " + lastName;
+
+        holder.itemView.setTag(id);
+        holder.mDisplayClient.setText(finishedName);
+
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
-        CompleteListViewHolder viewHolder;
-        if (convertView == null) {
-            LayoutInflater li = (LayoutInflater) mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = li.inflate(R.layout.list_layout, null);
-            viewHolder = new CompleteListViewHolder(v);
-            v.setTag(viewHolder);
-        } else {
-            viewHolder = (CompleteListViewHolder) v.getTag();
+    public int getItemCount() {
+        if (mCursor == null) {
+            return 0;
         }
-        viewHolder.mTVItem.setText(mList.get(position));
-        return v;
+        return mCursor.getCount();
     }
-}
 
-class CompleteListViewHolder {
-    public TextView mTVItem;
+    public Cursor swapCursor(Cursor cursor) {
+        if (mCursor == cursor) {
+            return null;
+        }
 
-    public CompleteListViewHolder(View base) {
-        mTVItem = (TextView) base.findViewById(R.id.listview_item);
+        Cursor temp = mCursor;
+        this.mCursor = cursor;
+
+        if (cursor != null) {
+            this.notifyDataSetChanged();
+        }
+
+        return temp;
+    }
+
+    class ListViewHolder extends RecyclerView.ViewHolder {
+
+        TextView mDisplayClient;
+
+        public ListViewHolder(View itemView) {
+            super(itemView);
+
+            mDisplayClient = (TextView) itemView.findViewById(R.id.listview_item);
+        }
     }
 }

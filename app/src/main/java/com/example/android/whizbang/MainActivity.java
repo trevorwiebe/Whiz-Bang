@@ -3,29 +3,25 @@ package com.example.android.whizbang;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SearchView;
 
 import com.example.android.whizbang.database.WhizBangContract;
 
-import java.util.ArrayList;
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-
-    SearchView mSearchView;
-    ListView mListView;
     private static final String TAG = "MainActivity";
-    ArrayList<String> itemsArrayList = new ArrayList<>();
-    private ListAdapter mListAdapter;
-
+    public static final int LOADER_ID = 37;
+    private ListAdapter mAdapter;
+    RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,76 +30,92 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getNewData();
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ListAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
 
-        mSearchView = (SearchView) findViewById(R.id.search_view);
 
-        mListView = (ListView) findViewById(R.id.listview);
+//                String selected = mListView.getItemAtPosition(position).toString();
+//                Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
+//                intent.putExtra("name", selected);
+//                startActivity(intent);
 
-        mListAdapter = new ListAdapter(this, itemsArrayList);
-        mListView.setAdapter(mListAdapter);
-
-        setUp();
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String selected = mListView.getItemAtPosition(position).toString();
-
-                Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-                intent.putExtra("name", selected);
-                startActivity(intent);
-
-            }
-        });
-
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String selected = mListView.getItemAtPosition(position).toString();
-                Intent editIntent = new Intent(MainActivity.this, EditDeleteActivity.class);
-                editIntent.putExtra("name", selected);
-                startActivity(editIntent);
-                return true;
-            }
-        });
+//                String selected = mListView.getItemAtPosition(position).toString();
+//                Intent editIntent = new Intent(MainActivity.this, EditDeleteActivity.class);
+//                editIntent.putExtra("name", selected);
+//                startActivity(editIntent);
+//                return true;
+        getSupportLoaderManager().initLoader(LOADER_ID, null, this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        itemsArrayList.clear();
-        getNewData();
+        getSupportLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            mListView.clearTextFilter();
-        }else {
-            mListView.setFilterText(newText);
-        }
-        return true;
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<Cursor>(this) {
+
+            Cursor mTaskData = null;
+
+            @Override
+            protected void onStartLoading() {
+                if (mTaskData != null) {
+                    deliverResult(mTaskData);
+                } else {
+                    forceLoad();
+                }
+            }
+
+            @Override
+            public Cursor loadInBackground() {
+                try {
+
+                    String[] projection = {WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN, WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN};
+
+                    return getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY,
+                            null,
+                            null,
+                            null,
+                            null);
+
+                } catch (Exception e) {
+                    Log.e(TAG, "loadInBackground: Error in MainActivity getting data");
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            public void deliverResult(Cursor data) {
+                mTaskData = data;
+                super.deliverResult(data);
+            }
+        };
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -118,39 +130,5 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setUp() {
-        mListView.setTextFilterEnabled(true);
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setSubmitButtonEnabled(false);
-    }
-
-    private void getNewData() {
-        Cursor cr;
-        String[] projection = new String[]{WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN, WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN};
-        cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY,
-                projection,
-                null,
-                null,
-                null);
-
-        if (cr == null) {
-            Log.e(TAG, "onLoadFinished: Error getting data");
-        } else {
-            cr.moveToFirst();
-            while (!cr.isAfterLast()) {
-                String first_name = cr.getString(cr.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
-                String last_name = cr.getString(cr.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
-                String total_name = first_name + " " + last_name;
-                itemsArrayList.add(total_name);
-                cr.moveToNext();
-            }
-        }
-        if (mListAdapter != null) {
-            mListAdapter.notifyDataSetChanged();
-        }
-        cr.close();
     }
 }

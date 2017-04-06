@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -41,17 +42,21 @@ public class ConfirmActivity extends AppCompatActivity {
 
         mTextView.setText("How much does " + name + " owe?");
 
+        // TODO: 4/6/2017 get correct date
         final String date = "hello";
 
         String[] selectedFromList = new String[]{name};
         String[] projection = new String[]{WhizBangContract.WhizBangEntry.EMAIL_COLUMN};
 
         // TODO: 4/2/2017 fix database problems with no quering for email address at a specific name
-        Cursor cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, null, null, null);
+        Cursor cr = getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, null, "email=?", selectedFromList, null);
+
+        Log.d(TAG, "onCreate: here");
 
         if (cr.moveToFirst()) {
             while (!cr.isAfterLast()) {
                 String email_address = cr.getString(cr.getColumnIndex(WhizBangContract.WhizBangEntry.EMAIL_COLUMN));
+                Log.d(TAG, "onCreate: " + email_address);
                 cr.moveToNext();
             }
         }
@@ -60,14 +65,14 @@ public class ConfirmActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                // TODO: 4/3/2017 query database to get email body and email subject to use instead of hard string
-
                 if (mAmountOwed.length() == 0) {
                     Snackbar.make(v, getResources().getString(R.string.no_amount_owed), Snackbar.LENGTH_LONG).show();
                     return;
                 }
 
                 String amount_owed = mAmountOwed.getText().toString();
+
+                // TODO: 4/3/2017 query database to get email body and email subject to use instead of hard string
 
                 final String email_subject = "Main Street Cafe Billing";
                 final String body_of_email = "Hello there, This is your monthly notice. As of " + date + " you owe Main Street Cafe $" + amount_owed +
