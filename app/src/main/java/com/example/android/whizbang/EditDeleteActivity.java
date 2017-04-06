@@ -3,8 +3,10 @@ package com.example.android.whizbang;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import com.example.android.whizbang.database.WhizBangContract;
@@ -17,6 +19,7 @@ public class EditDeleteActivity extends AppCompatActivity {
     EditText mEditLastName;
     EditText mEditEmailAddress;
     EditText mEditPhoneNumber;
+    FloatingActionButton mSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class EditDeleteActivity extends AppCompatActivity {
         mEditLastName = (EditText) findViewById(R.id.edit_last_name_ed);
         mEditEmailAddress = (EditText) findViewById(R.id.edit_email_address_ed);
         mEditPhoneNumber = (EditText) findViewById(R.id.edit_phone_number_ed);
+        mSubmit = (FloatingActionButton) findViewById(R.id.submit_fab);
 
         Intent editIntent = getIntent();
         String name = editIntent.getStringExtra("name");
@@ -55,6 +59,12 @@ public class EditDeleteActivity extends AppCompatActivity {
             }
         }
 
+        mSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         editCursor.close();
 
