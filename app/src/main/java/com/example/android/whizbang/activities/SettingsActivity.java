@@ -1,4 +1,4 @@
-package com.example.android.whizbang;
+package com.example.android.whizbang.activities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.android.whizbang.R;
 import com.example.android.whizbang.database.WhizBangContract;
 
 public class SettingsActivity extends AppCompatActivity {

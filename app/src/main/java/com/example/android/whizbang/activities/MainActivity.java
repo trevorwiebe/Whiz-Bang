@@ -1,4 +1,4 @@
-package com.example.android.whizbang;
+package com.example.android.whizbang.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.android.whizbang.utils.ItemClickListener;
+import com.example.android.whizbang.utils.ListAdapter;
+import com.example.android.whizbang.R;
 import com.example.android.whizbang.database.WhizBangContract;
 
 import java.util.ArrayList;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     RecyclerView mRecyclerView;
     private ArrayList<String> clientListFirst = new ArrayList<>();
     private ArrayList<String> clientListLast = new ArrayList<>();
+    private ArrayList<String> clientListInt = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +61,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public void onLongItemClick(View view, int position) {
                 String selectedFirst = clientListFirst.get(position);
                 String selectedLast = clientListLast.get(position);
+                String selectedInt = clientListInt.get(position);
+                Log.d(TAG, "onLongItemClick: " + selectedFirst);
                 Intent intent = new Intent(MainActivity.this, EditDeleteActivity.class);
                 intent.putExtra("first_name", selectedFirst);
                 intent.putExtra("last_name", selectedLast);
+                intent.putExtra("int", selectedInt);
                 startActivity(intent);
                 mVibrator.vibrate(25);
             }
         }));
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+
+//        LoadDataFromDatabase loadData = new LoadDataFromDatabase(this,
+//                WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY,
+//                null,
+//                null,
+//                null,
+//                null);
     }
 
     @Override
@@ -115,13 +129,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         clientListFirst.clear();
+        clientListLast.clear();
+        clientListInt.clear();
         if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 String first_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
                 String last_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
-                Log.d(TAG, "onLoadFinished: " + last_name);
+                String id = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry._ID));
                 clientListLast.add(last_name);
                 clientListFirst.add(first_name);
+                clientListInt.add(id);
                 data.moveToNext();
             }
         }

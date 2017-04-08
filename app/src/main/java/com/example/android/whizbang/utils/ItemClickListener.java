@@ -1,4 +1,4 @@
-package com.example.android.whizbang;
+package com.example.android.whizbang.utils;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

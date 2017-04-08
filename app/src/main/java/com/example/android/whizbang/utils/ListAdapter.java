@@ -1,4 +1,4 @@
-package com.example.android.whizbang;
+package com.example.android.whizbang.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.whizbang.R;
 import com.example.android.whizbang.database.WhizBangContract;
 
 /**

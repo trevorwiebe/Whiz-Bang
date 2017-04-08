@@ -1,4 +1,4 @@
-package com.example.android.whizbang;
+package com.example.android.whizbang.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.whizbang.R;
 import com.example.android.whizbang.database.WhizBangContract;
 
 import java.text.DateFormat;
