@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public static final int LOADER_ID = 37;
     private ListAdapter mAdapter;
     RecyclerView mRecyclerView;
-    private ArrayList<String> clientList = new ArrayList<>();
+    private ArrayList<String> clientListFirst = new ArrayList<>();
+    private ArrayList<String> clientListLast = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +47,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.addOnItemTouchListener(new ItemClickListener(this, mRecyclerView, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String selected = clientList.get(position);
+                String selectedFirst = clientListFirst.get(position);
                 Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-                intent.putExtra("name", selected);
+                intent.putExtra("first_name", selectedFirst);
                 startActivity(intent);
             }
 
             @Override
             public void onLongItemClick(View view, int position) {
-                String selected = clientList.get(position);
-                Intent editIntent = new Intent(MainActivity.this, EditDeleteActivity.class);
-                editIntent.putExtra("name", selected);
-                startActivity(editIntent);
+                String selectedFirst = clientListFirst.get(position);
+                String selectedLast = clientListLast.get(position);
+                Intent intent = new Intent(MainActivity.this, EditDeleteActivity.class);
+                intent.putExtra("first_name", selectedFirst);
+                intent.putExtra("last_name", selectedLast);
+                startActivity(intent);
                 mVibrator.vibrate(25);
             }
         }));
@@ -89,13 +92,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             public Cursor loadInBackground() {
                 try {
 
-                    String[] projection = {WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN, WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN};
-
                     return getContentResolver().query(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY,
                             null,
                             null,
                             null,
-                            null);
+                            WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN + " ASC");
 
                 } catch (Exception e) {
                     Log.e(TAG, "loadInBackground: Error in MainActivity getting data");
@@ -113,11 +114,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        clientList.clear();
+        clientListFirst.clear();
         if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 String first_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
-                clientList.add(first_name);
+                String last_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
+                Log.d(TAG, "onLoadFinished: " + last_name);
+                clientListLast.add(last_name);
+                clientListFirst.add(first_name);
                 data.moveToNext();
             }
         }
@@ -141,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 //            Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
 //            startActivity(settings_intent);

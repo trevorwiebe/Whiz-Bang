@@ -24,6 +24,8 @@
     <string name="edit_last_name">Modifier le nom de famille</string>
     <string name="edit_email_address">Modifier l`adresse e-mail</string>
     <string name="edit_phone_number">Modifier le numéro de téléphone</string>
+    <string name="delete">Effacer</string>
+    <string name="save">Enregistrer</string>
 
     <!-- menu strings -->
     <string name="add_new_client">Ajouter un nouveau client</string>

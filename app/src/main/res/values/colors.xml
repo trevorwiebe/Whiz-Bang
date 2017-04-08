@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="labelTextColor">#000000</color>
+    <color name="deleteBtn">#ef5350</color>
+    <color name="saveBtn">#66bb6a</color>
 </resources>

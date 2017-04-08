@@ -23,6 +23,8 @@
     <string name="edit_last_name">Edit Last Name</string>
     <string name="edit_email_address">Edit Email Address</string>
     <string name="edit_phone_number">Edit Phone Number</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save changes</string>
 
     <!-- menu strings -->
     <string name="add_new_client">Add New Client</string>
