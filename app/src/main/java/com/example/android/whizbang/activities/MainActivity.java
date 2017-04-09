@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ListAdapter mAdapter;
     RecyclerView mRecyclerView;
     private ArrayList<String> clientListFirst = new ArrayList<>();
-    private ArrayList<String> clientListLast = new ArrayList<>();
     private ArrayList<String> clientListInt = new ArrayList<>();
 
     @Override
@@ -51,9 +50,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.addOnItemTouchListener(new ItemClickListener(this, mRecyclerView, new ItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String selectedFirst = clientListFirst.get(position);
+                String id = clientListInt.get(position);
+                String name = clientListFirst.get(position);
                 Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
-                intent.putExtra("first_name", selectedFirst);
+                intent.putExtra("name", name);
+                intent.putExtra("id", id);
                 startActivity(intent);
             }
 
@@ -117,14 +118,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         clientListFirst.clear();
-        clientListLast.clear();
         clientListInt.clear();
         if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 String first_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
                 String last_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
                 String id = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry._ID));
-                clientListLast.add(last_name);
                 clientListFirst.add(first_name);
                 clientListInt.add(id);
                 data.moveToNext();

@@ -12,11 +12,12 @@
     <string name="email_address_label">Email</string>
     <string name="phone_number_label">Phone Number</string>
     <string name="blanks_not_filled">Please fill First Name, Email and/or Phone Number.</string>
-    <string name="hint_example">Example: 16028770957@vtext.com</string>
 
     <!-- confirm activity -->
     <string name="no_clients_installed">No available email client, Please install one</string>
     <string name="no_amount_owed">Please enter amount owed</string>
+    <string name="send_via_text">Message will be sent via Text Message</string>
+    <string name="send_via_email">Message will be sent via Email</string>
 
     <!-- edit~delete activity -->
     <string name="edit_first_name">Edit First Name</string>
