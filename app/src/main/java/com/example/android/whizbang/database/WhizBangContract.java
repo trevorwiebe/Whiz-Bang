@@ -25,6 +25,7 @@ public class WhizBangContract {
         public static final String FIRST_NAME_COLUMN = "first_name";
         public static final String LAST_NAME_COLUMN = "last_name";
         public static final String EMAIL_COLUMN = "email";
+        public static final String PHONE_NUMBER_COLUMN = "phone";
     }
 
     public static final class WhizBangEmail implements BaseColumns {

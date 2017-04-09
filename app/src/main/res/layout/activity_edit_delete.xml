@@ -66,6 +66,24 @@
                 android:ems="15"
                 android:inputType="textEmailAddress"/>
 
+            <TextView
+                android:id="@+id/edit_phone_number_tv"
+                style="@style/Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/edit_phone_number"/>
+
+            <EditText
+                android:id="@+id/edit_phone_number_ed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:ems="15"
+                android:inputType="phone"/>
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

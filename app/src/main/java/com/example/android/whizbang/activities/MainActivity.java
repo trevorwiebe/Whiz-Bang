@@ -59,26 +59,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             @Override
             public void onLongItemClick(View view, int position) {
-                String selectedFirst = clientListFirst.get(position);
-                String selectedLast = clientListLast.get(position);
                 String selectedInt = clientListInt.get(position);
-                Log.d(TAG, "onLongItemClick: " + selectedFirst);
                 Intent intent = new Intent(MainActivity.this, EditDeleteActivity.class);
-                intent.putExtra("first_name", selectedFirst);
-                intent.putExtra("last_name", selectedLast);
                 intent.putExtra("int", selectedInt);
                 startActivity(intent);
                 mVibrator.vibrate(25);
             }
         }));
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-
-//        LoadDataFromDatabase loadData = new LoadDataFromDatabase(this,
-//                WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY,
-//                null,
-//                null,
-//                null,
-//                null);
     }
 
     @Override
