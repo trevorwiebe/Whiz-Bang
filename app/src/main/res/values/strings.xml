@@ -25,12 +25,8 @@
     <string name="edit_email_address">Edit Email Address</string>
     <string name="edit_phone_number">Edit Phone Number</string>
     <string name="record_deleted">Record was deleted</string>
+    <string name="record_updated">Record was updated</string>
     <string name="delete">Delete</string>
     <string name="save">Save changes</string>
 
-    <!-- menu strings -->
-    <string name="add_new_client">Add New Client</string>
-
-    <!-- search hint string -->
-    <string name="search_hint">Search...</string>
 </resources>

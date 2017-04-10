@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.whizbang.utils.ItemClickListener;
 import com.example.android.whizbang.utils.ListAdapter;
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (id == R.id.action_settings) {
 //            Intent settings_intent = new Intent(MainActivity.this, SettingsActivity.class);
 //            startActivity(settings_intent);
+            Toast.makeText(this, "Not implemented yet", Toast.LENGTH_LONG).show();
             return false;
         }
 

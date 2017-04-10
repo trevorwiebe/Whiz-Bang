@@ -84,6 +84,9 @@ public class EditDeleteActivity extends AppCompatActivity {
                     return;
                 }
 
+                Uri uri = WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY;
+                uri = uri.buildUpon().appendPath(transfer_int).build();
+
                 String edited_first_name = mEditFirstName.getText().toString();
                 String edited_last_name = mEditLastName.getText().toString();
                 String edited_email_address = mEditEmailAddress.getText().toString();
@@ -96,13 +99,14 @@ public class EditDeleteActivity extends AppCompatActivity {
                 contentValues.put(WhizBangContract.WhizBangEntry.EMAIL_COLUMN, edited_email_address);
                 contentValues.put(WhizBangContract.WhizBangEntry.PHONE_NUMBER_COLUMN, edited_phone_number);
 
-                getContentResolver().update(WhizBangContract.WhizBangEntry.CONTENT_URI_ENTRY, contentValues, "id=?", mSelection);
+                int numsUpdated = getContentResolver().update(uri, contentValues, null, null);
 
+                if (numsUpdated != 0) {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.record_updated), Toast.LENGTH_LONG).show();
+                }
                 finish();
             }
         });
-
         editCursor.close();
-
     }
 }

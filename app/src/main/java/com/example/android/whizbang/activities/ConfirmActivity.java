@@ -38,7 +38,6 @@ public class ConfirmActivity extends AppCompatActivity {
     TextView mConfirmSendingClient;
     String email_address;
     String phone_number;
-    String body_of_email;
     String body_of_sms;
 
     @Override
