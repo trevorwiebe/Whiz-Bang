@@ -123,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (data.moveToFirst()) {
             while (!data.isAfterLast()) {
                 String first_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.FIRST_NAME_COLUMN));
-                String last_name = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry.LAST_NAME_COLUMN));
                 String id = data.getString(data.getColumnIndex(WhizBangContract.WhizBangEntry._ID));
                 clientListFirst.add(first_name);
                 clientListInt.add(id);
