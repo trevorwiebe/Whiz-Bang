@@ -1,0 +1,2 @@
+# Whiz-Bang
+This app is very basic.  What it does is makes it much easier to send customers their monthly bill. It stores their name and email address or phone number in a database using a content provider. Then you select the person you want to send a bill to and enter the amount and press send. Then based on what contact information is stored in the database it will either email or text the amount owed.
